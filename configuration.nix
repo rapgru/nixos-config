@@ -106,11 +106,15 @@
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.grub.device = "/dev/sda";
-  boot.initrd.checkJournalingFS = false;
-  security.rngd.enable = false;
 
-  networking.hostName = "nixos"; # Define your hostname.
+  # LUKS encryption
+  boot.initrd.luks.devices.nixos = {
+    name = "nixos";
+    device = "/dev/disk/by-uuid/432d83cc-b474-4dd1-8b03-67d9e6425465";
+    preLVM = true;
+  };
+
+  networking.hostName = "nixos-surface"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Set your time zone.
@@ -120,18 +124,20 @@
   # Per-interface useDHCP will be mandatory in the future, so this generated config
   # replicates the default behaviour.
   networking.useDHCP = false;
-  networking.interfaces.enp0s3.useDHCP = true;
+  networking.interfaces.enp0s20f0u1u1u3.useDHCP = true;
+  # networking.interfaces.wlp1s0.useDHCP = true;
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
   # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Select internationalisation properties.
-  # i18n.defaultLocale = "en_US.UTF-8";
-  # console = {
-  #   font = "Lat2-Terminus16";
-  #   keyMap = "us";
-  # };
+  i18n.defaultLocale = "en_US.UTF-8";
+  console = {
+    # font = "Lat2-Terminus16";
+    font = "${pkgs.terminus_font}/share/consolefonts/ter-v32n.psf.gz";
+    keyMap = "us";
+  };
 
   # Configure keymap in X11
   # services.xserver.layout = "us";
