@@ -9,6 +9,7 @@
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
       ./modules/greetd.nix
+      ./modules/surface.nix
       <home-manager/nixos>
     ];
 
@@ -16,7 +17,7 @@
   nixpkgs.config.allowUnfree = true;
 
 
-  environment.systemPackages = [ pkgs.neofetch pkgs.wayland-utils pkgs.vim pkgs.mkpasswd pkgs.git ];
+  environment.systemPackages = [ pkgs.neofetch pkgs.wayland-utils pkgs.vim pkgs.mkpasswd pkgs.git pkgs.nix-index ];
 
   services.greetd.enable = true;
   services.greetd.tuigreet.enable = true;
@@ -73,8 +74,9 @@
       systemdIntegration = false;
       config = {
         output = {
-          Virtual-1 = {
-            resolution = "1400x1050"; 
+          eDP-1 = {
+            resolution = "3000x2000"; 
+            scale = "2";
           };
         };
         modifier = "Mod4";
@@ -124,7 +126,7 @@
   # Per-interface useDHCP will be mandatory in the future, so this generated config
   # replicates the default behaviour.
   networking.useDHCP = false;
-  networking.interfaces.enp0s20f0u1u1u3.useDHCP = true;
+  networking.interfaces.wlp1s0.useDHCP = true;
   # networking.interfaces.wlp1s0.useDHCP = true;
 
   # Configure network proxy if necessary

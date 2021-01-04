@@ -1,0 +1,7 @@
+{
+    "owner": "linux-surface",
+    "repo": "libwacom-surface",
+    "rev": "12628e069298ac2e409501d423a1bf8567b5d1bb",
+    "sha256": "1lydyfx33crd0qvzdyqyp39d0d9fnsplch6429sagdsn6a139ap0",
+    "fetchSubmodules": true
+}
