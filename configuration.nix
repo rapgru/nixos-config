@@ -17,7 +17,7 @@
   nixpkgs.config.allowUnfree = true;
 
 
-  environment.systemPackages = [ pkgs.neofetch pkgs.wayland-utils pkgs.vim pkgs.mkpasswd pkgs.git pkgs.nix-index ];
+  environment.systemPackages = [ pkgs.neofetch pkgs.wayland-utils pkgs.vim pkgs.mkpasswd pkgs.git pkgs.nix-index pkgs.file ];
 
   services.greetd.enable = true;
   services.greetd.tuigreet.enable = true;
@@ -62,7 +62,7 @@
     isNormalUser = true;
     home = "/home/rgruber";
     description = "Raphael Gruber";
-    extraGroups = [ "wheel" ];
+    extraGroups = [ "wheel" "audio" "video" ];
   };
 
 
@@ -77,6 +77,13 @@
           eDP-1 = {
             resolution = "3000x2000"; 
             scale = "2";
+            position = "0,1080";
+          };
+          # Samsung Full HD Monitor
+          DP-1 = {
+            resolution = "1920x1080";
+            scale = "1";
+            position = "0,0";
           };
         };
         modifier = "Mod4";
@@ -84,7 +91,6 @@
         menu = "${pkgs.wofi}/bin/wofi --show drun";
         gaps.inner = 5;
         gaps.smartGaps = true;
-        
       };
     }; 
     home.packages = with pkgs; [
@@ -95,9 +101,15 @@
       wofi 
       sway-run
       vivaldi
+      gotop
+      discord
     ];
     programs.alacritty = {
       enable = true;
+    };
+    programs.vscode = {
+      enable = true;
+      extensions = [ pkgs.vscode-extensions.bbenoist.Nix ];
     };
   };
   
@@ -121,6 +133,11 @@
 
   # Set your time zone.
   time.timeZone = "Europe/Vienna";
+
+  hardware.pulseaudio = {
+    enable = true;
+    support32Bit = true;
+  };
 
   # The global useDHCP flag is deprecated, therefore explicitly set to false here.
   # Per-interface useDHCP will be mandatory in the future, so this generated config
