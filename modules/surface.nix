@@ -2,7 +2,7 @@
 
 {
   imports = [
-    ./linux-surface.nix
+    ./my-linux-surface.nix
     # testing
     # ../nixos-hardware/microsoft/surface
   ];
