@@ -83,7 +83,7 @@ in
       Greeter daemon
     '';
     # after = [ "systemd-user-sessions.service" "plymouth-quit-wait.service" "getty@tty1.service" "user.slice" ];
-    after = [ "rc-local.service" "systemd-machined.service" "systemd-user-sessions.service" "getty@tty1.service" "systemd-logind.service" "acpid.service" ];
+    after = [ "rc-local.service" "networking.service" "systemd-machined.service" "systemd-user-sessions.service" "getty@tty1.service" "systemd-logind.service" "acpid.service" ];
     conflicts = [ "getty@tty1.service" ];
     restartIfChanged = false;
     serviceConfig = {

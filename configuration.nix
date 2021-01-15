@@ -6,39 +6,37 @@
 
 {
   imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      ./modules/greetd.nix
-      ./modules/surface.nix
+    [
+      # home manager
       <home-manager/nixos>
+
+      # general modules
+      ./modules/services/greetd.nix
+      ./modules/kernel/linux-surface-patches.nix
+      ./modules/services/iptsd.nix
+
+      # configuration modules
+      ./config/hardware-configuration.nix
+      ./config/login.nix
+      ./config/users.nix
+      ./config/surface-specific.nix
     ];
 
   nixpkgs.overlays = [ (import ./pkgs) ];
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.pulseaudio = true;
 
-
-  environment.systemPackages = [ pkgs.neofetch pkgs.wayland-utils pkgs.vim pkgs.mkpasswd pkgs.git pkgs.nix-index pkgs.file ];
-
-  services.greetd.enable = true;
-  services.greetd.tuigreet.enable = true;
-  services.greetd.tuigreet.cmd = "sway-run";
-  services.greetd.tuigreet.showTime = true;
-  services.greetd.tuigreet.showAsterisks = true;
-  services.greetd.tuigreet.customGreeting = "Hello sir! Please log in:";
+  environment.systemPackages = with pkgs; [
+    neofetch
+    wayland-utils
+    vim
+    mkpasswd
+    git
+    nix-index
+    file
+    blueman
+  ];
   
-  #programs.sway = {
-  #  enable = true;
-  #  wrapperFeatures.gtk = true;
-  #  extraPackages = with pkgs; [
-  #    swaylock
-  #    swayidle
-  #    wl-clipboard
-  #    mako
-  #    alacritty
-  #    wofi
-  #  ];
-  #};
-
   fonts = {
     fonts = with pkgs; [
       fira-code
@@ -54,63 +52,11 @@
     };
   };
 
-  users.mutableUsers = false;
-  users.users.root.hashedPassword = "$6$eaLLB8HjU$fDZ6tylghN2aYHpQ2UUKGpgDVA..buTH4cLaSUzyMVB/kjlPjGl8hdwPd8MZAW3fG8KzWKywCE4JhbqLsQgAe.";
-  users.users.rgruber.hashedPassword = "$6$eaLLB8HjU$fDZ6tylghN2aYHpQ2UUKGpgDVA..buTH4cLaSUzyMVB/kjlPjGl8hdwPd8MZAW3fG8KzWKywCE4JhbqLsQgAe.";
-
-  users.users.rgruber = {
-    isNormalUser = true;
-    home = "/home/rgruber";
-    description = "Raphael Gruber";
-    extraGroups = [ "wheel" "audio" "video" ];
-  };
-
-
   home-manager.users.rgruber = { pkgs, ... }: {
-    wayland.windowManager.sway = {
-      enable = true;
-      #package = null;
-      wrapperFeatures.gtk = true;
-      systemdIntegration = false;
-      config = {
-        output = {
-          eDP-1 = {
-            resolution = "3000x2000"; 
-            scale = "2";
-            position = "0,1080";
-          };
-          # Samsung Full HD Monitor
-          DP-1 = {
-            resolution = "1920x1080";
-            scale = "1";
-            position = "0,0";
-          };
-        };
-        modifier = "Mod4";
-        terminal = "${pkgs.alacritty}/bin/alacritty";
-        menu = "${pkgs.wofi}/bin/wofi --show drun";
-        gaps.inner = 5;
-        gaps.smartGaps = true;
-      };
-    }; 
-    home.packages = with pkgs; [
-      swaylock
-      swayidle
-      wl-clipboard
-      mako
-      wofi 
-      sway-run
-      vivaldi
-      gotop
-      discord
+    imports = [
+      ./config/rgruber/sway.nix
+      ./config/rgruber/default.nix
     ];
-    programs.alacritty = {
-      enable = true;
-    };
-    programs.vscode = {
-      enable = true;
-      extensions = [ pkgs.vscode-extensions.bbenoist.Nix ];
-    };
   };
   
   # use /etc/profiles
@@ -137,7 +83,9 @@
   hardware.pulseaudio = {
     enable = true;
     support32Bit = true;
+    package = pkgs.pulseaudioFull;
   };
+  sound.enable = true;
 
   # The global useDHCP flag is deprecated, therefore explicitly set to false here.
   # Per-interface useDHCP will be mandatory in the future, so this generated config

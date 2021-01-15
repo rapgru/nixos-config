@@ -4,7 +4,7 @@ let
 
   # linux-surface github repo
   linuxSurface = pkgs.fetchFromGitHub {
-    inherit (lib.importJSON ../linux-surface.json)
+    inherit (lib.importJSON ./linux-surface.json)
       owner repo rev sha256;
 
     # owner = "linux-surface";
