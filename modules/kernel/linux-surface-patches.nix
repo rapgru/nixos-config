@@ -23,7 +23,40 @@ let
     name = "linux-surface-config";
     patch = null;
      
-    extraConfig = builtins.readFile "${linuxSurface}/configs/surface-${version}.config";
+    #extraConfig = builtins.readFile "${linuxSurface}/configs/surface-${version}.config";
+    structuredExtraConfig = let
+        origConf = builtins.readFile
+          "${linuxSurface}/configs/surface-${version}.config";
+
+        flatten = x:
+          if builtins.isList x then
+            builtins.concatMap (y: flatten y) x
+          else
+            [ x ];
+
+        kernelValues = with lib.kernel; {
+          y = yes;
+          n = no;
+          m = module;
+        };
+
+        tokenize = sep: str:
+          let x = flatten (builtins.split sep str);
+          in if builtins.length x < 2 then
+            null
+          else {
+            name = builtins.head x;
+            value = kernelValues."${builtins.head (builtins.tail x)}";
+          };
+
+        parseFile = with builtins;
+          sep: str:
+          (listToAttrs (map (tokenize sep) (filter (str: str != "")
+            (flatten (map (builtins.split "^CONFIG_") (flatten
+              (filter isList (map (match "^(CONFIG_.*[mny]).*")
+                (flatten (split "\n" str))))))))));
+      in with lib.kernel;
+      (parseFile "=" origConf);
   };
 
   additionalSurfaceConfig = {
