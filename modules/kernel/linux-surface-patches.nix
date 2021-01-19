@@ -30,7 +30,7 @@ let
     name = "additional-surface-config";
     patch = null;
     
-    structuredExtraConfig = with lib.kernel {
+    structuredExtraConfig = with lib.kernel; {
       CONFIG_WATCH_QUEUE = yes;
       CONFIG_KERNEL_ZSTD = yes;
       CONFIG_IRQ_TIME_ACCOUNTING = yes;
@@ -154,7 +154,7 @@ let
       CONFIG_INTEL_SOC_PMIC = yes;
       CONFIG_INTEL_SOC_PMIC_CHTWC = yes;
       CONFIG_DRM_DP_CEC = yes;
-      CONFIG_BACKLIGHT_CLASS_DEVICE
+      CONFIG_BACKLIGHT_CLASS_DEVICE = yes;
       CONFIG_SND_HDA_INPUT_BEEP_MODE = 0;
       CONFIG_SND_HDA_POWER_SAVE_DEFAULT = 1;
       CONFIG_SND_HDA_INTEL_HDMI_SILENT_STREAM
@@ -260,6 +260,7 @@ let
           patch = dir + "/${file}";
         };
       in mapDir patch "${linuxSurface}/patches/${version}";
+
 in  
 {
   config = { 
