@@ -4,4 +4,5 @@ self: super: {
   sway-run = super.callPackage ./sway-run {};
   iptsd = super.callPackage ./iptsd {};
   inih = super.callPackage ./inih {};
+  surface-control = super.callPackage ./surface-control {};
 }

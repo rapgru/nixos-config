@@ -39,6 +39,9 @@
           lib.mkOptionDefault {
             "XF86AudioRaiseVolume" = "exec pulsemixer --change-volume +5";
             "XF86AudioLowerVolume" = "exec pulsemixer --change-volume -5";
+            "XF86MonBrightnessUp" = "exec brillo -A 5";
+            "XF86MonBrightnessDown" = "exec brillo -U 5";
+            "Mod4+shift+g" = ''exec grim -g "$(slurp)" - | wl-copy -t image'';
           };
         modifier = "Mod4";
         terminal = "${pkgs.alacritty}/bin/alacritty";
@@ -63,14 +66,14 @@
       settings = [
         {
           layer = "top";
-          position = "top";
+          position = "bottom";
           height = 30;
           modules-left = [ "clock" "pulseaudio" "tray" ];
           modules-center = [ "sway/workspaces" ]; 
-          modules-right = [ "network" "cpu" "memory" "disk" ];
+          modules-right = [ "network" "cpu" "memory" "disk" "battery" ];
           modules = {
             "sway/workspaces" = {
-              all-outputs = true;
+              all-outputs = false;
               "persistent_workspaces" = {
                 "1" = [];
                 "2" = [];
@@ -84,9 +87,16 @@
               }; 
             };
             cpu = {
-              format = "{usage}%";
+              format = " {usage}%";
               interval = 1;
               tooltip = false;
+            };
+            battery = {
+              interval = 60;
+              states = {
+                warning = 30;
+                critical = 15;
+              };
             };
             tray = {
               spacing = 5;
@@ -97,24 +107,38 @@
               tooltip = false;
               on-click = "pulsemixer";
               format = "{volume}% {icon}";
+              format-bluetooth = "{volume}% {icon}";
+              format-muted = "";
+              format-icons = {
+                headphones = "";
+                handsfree = "";
+                headset = "";
+                phone = "";
+                portable = "";
+                car = "";
+                default = [ "" "" ];
+              };
             };
             clock = {
-              format = "{:%d.%m.%Y %T}";
+              format = " {:%d.%m.%Y %T}";
               interval = 5;
+              tooltip = false;
             };
             disk = {
               interval = 180;
-              format = "{free}";
+              format = " {free}";
               path = "/";
             };
             memory = {
               interval = 30;
-              format = "{used:0.1f} GiB";
+              format = " {used:0.1f} GiB";
+              tooltip = false;
             };
             network = {
-              format-wifi = "{essid} at {signalStrength}%";
-              format-ethernet = "Wired {ipaddr}";
-              format-disconnected = "Disconnected";
+              tooltip-format-wifi = " {essid} {ipaddr} at {signalStrength}%";
+              format-wifi = " {essid}";
+              format-ethernet = " {ipaddr}/{cidr}";
+              format-disconnected = "";
               on-click = "nmtui";
             };
           };
@@ -128,5 +152,7 @@
       mako
       wofi 
       sway-run
+      grim # screenshots
+      slurp # select region 
     ];
 }

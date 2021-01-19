@@ -11,6 +11,8 @@
       jetbrains.idea-ultimate
       jetbrains.phpstorm
       jetbrains.webstorm
+      thunderbird
+      kdeApplications.dolphin
     ];
     programs.alacritty = {
       enable = true;

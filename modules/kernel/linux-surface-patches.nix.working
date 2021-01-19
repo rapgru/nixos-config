@@ -23,17 +23,48 @@ let
     name = "linux-surface-config";
     patch = null;
      
-    extraConfig = builtins.readFile "${linuxSurface}/configs/surface-${version}.config";
-  };
+    structuredExtraConfig = let
+        origConf = builtins.readFile
+          "${linuxSurface}/configs/surface-${version}.config";
 
-  additionalSurfaceConfig = {
-    name = "additional-surface-config";
-    patch = null;
-    
-    extraConfig = ''
-      
-    '';
-  }
+        flatten = x:
+          if builtins.isList x then
+            builtins.concatMap (y: flatten y) x
+          else
+            [ x ];
+
+        kernelValues = with lib.kernel; {
+          y = yes;
+          n = no;
+          m = module;
+        };
+
+        tokenize = sep: str:
+          let x = flatten (builtins.split sep str);
+          in if builtins.length x < 2 then
+            null
+          else {
+            name = builtins.head x;
+            value = kernelValues."${builtins.head (builtins.tail x)}";
+          };
+
+        parseFile = with builtins;
+          sep: str:
+          (listToAttrs (map (tokenize sep) (filter (str: str != "")
+            (flatten (map (builtins.split "^CONFIG_") (flatten
+              (filter isList (map (match "^(CONFIG_.*[mny]).*")
+                (flatten (split "\n" str))))))))));
+      in with lib.kernel;
+      (parseFile "=" origConf) // {
+        # https://github.com/NixOS/nixpkgs/issues/88073
+        SERIAL_DEV_BUS = yes;
+        SERIAL_DEV_CTRL_TTYPORT = yes;
+
+        # https://github.com/linux-surface/linux-surface/issues/61
+        PINCTRL_INTEL = yes;
+        PINCTRL_SUNRISEPOINT = yes;
+      };
+  };
 
   # get patches from linux-surface patches directory
   # convert to attrset format nix expects

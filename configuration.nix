@@ -20,6 +20,7 @@
       ./config/login.nix
       ./config/users.nix
       ./config/surface-specific.nix
+      ./config/virtualization.nix
     ];
 
   nixpkgs.overlays = [ (import ./pkgs) ];
@@ -35,6 +36,8 @@
     nix-index
     file
     blueman
+    brillo
+    surface-control
   ];
   
   fonts = {
@@ -42,12 +45,13 @@
       fira-code
       fira
       libre-baskerville
+      font-awesome
     ];
     fontconfig = {
       defaultFonts = {
         serif = [ "Libre Baskerville" ];
-        sansSerif = [ "Fira Sans" ];
-        monospace = [ "Fira Code" ];
+        sansSerif = [ "Fira Sans" "Font Awesome 5 Free" ];
+        monospace = [ "Fira Code" "Font Awesome 5 Free" ];
       };
     };
   };
@@ -79,6 +83,7 @@
 
   # Set your time zone.
   time.timeZone = "Europe/Vienna";
+  time.hardwareClockInLocalTime = true;
 
   hardware.pulseaudio = {
     enable = true;

@@ -9,7 +9,7 @@
     isNormalUser = true;
     home = "/home/rgruber";
     description = "Raphael Gruber";
-    extraGroups = [ "wheel" "audio" "video" ];
+    extraGroups = [ "wheel" "audio" "video" "docker" ];
   };
 }
 
