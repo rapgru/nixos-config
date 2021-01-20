@@ -14,7 +14,7 @@ let
   };
   
   # currently selected kernel version => for folder selection in linux-surface repo
-  #version = lib.versions.majorMinor "${config.boot.kernelPackages.kernel.version}";
+  version = lib.versions.majorMinor "${config.boot.kernelPackages.kernel.version}";
 
   availablePatchVersions = lib.mapAttrsToList (n: v: n) (builtins.readDir "${linuxSurface}/patches");
 
@@ -299,8 +299,8 @@ in
     nixpkgs = {
       overlays = [
         (self: super: {
-          linux_surface_5_10 = pkgs.linuxPackagesFor (pkgs.linux_5_10.override {
-            structuredExtraConfig = linuxSurfaceConfig // additionalSurfaceConfig;
+          linux_surface_5_9 = pkgs.linuxPackagesFor (pkgs.linux_5_9.override {
+            structuredExtraConfig = (additionalSurfaceConfig // additionalSurfaceConfig);
             # ignoreConfigErrors = true;
             kernelPatches = linuxSurfacePatches;
           });
