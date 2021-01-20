@@ -61,7 +61,7 @@ let
     IKCONFIG = module;
     BUILD_BIN2C = yes;
     UCLAMP_TASK = yes;
-    UCLAMP_BUCKETS_COUNT = 5;
+    UCLAMP_BUCKETS_COUNT = freeform 5;
     NUMA_BALANCING = yes;
     NUMA_BALANCING_DEFAULT_ENABLED = yes;
     RT_GROUP_SCHED = yes;
@@ -81,7 +81,7 @@ let
     AMD_MEM_ENCRYPT = yes;
     X86_INTEL_TSX_MODE_AUTO = yes;
     HZ_300 = yes;
-    HZ = 300;
+    HZ = freeform 300;
     KEXEC_FILE = yes;
     ARCH_HAS_KEXEC_PURGATORY = yes;
     KEXEC_SIG = yes;
@@ -145,7 +145,7 @@ let
     BLK_DEV_NVME = yes;
     NVME_MULTIPATH = yes;
     SATA_AHCI = yes;
-    SATA_MOBILE_LPM_POLICY = 3;
+    SATA_MOBILE_LPM_POLICY = freeform 3;
     KEYBOARD_ATKBD = yes;
     SERIO = yes;
     SERIO_I8042 = yes;
@@ -178,8 +178,8 @@ let
     INTEL_SOC_PMIC_CHTWC = yes;
     DRM_DP_CEC = yes;
     BACKLIGHT_CLASS_DEVICE = yes;
-    SND_HDA_INPUT_BEEP_MODE = 0;
-    SND_HDA_POWER_SAVE_DEFAULT = 1;
+    SND_HDA_INPUT_BEEP_MODE = freeform 0;
+    SND_HDA_POWER_SAVE_DEFAULT = freeform 1;
     SND_HDA_INTEL_HDMI_SILENT_STREAM = yes;
     SND_SOC_SOF_INTEL_SOUNDWIRE_LINK_BASELINE = module;
     HID = yes;
@@ -198,7 +198,7 @@ let
     EDAC = yes;
     EDAC_LEGACY_SYSFS = yes;
     RTC_HCTOSYS = yes;
-    RTC_HCTOSYS_DEVICE="rct0";
+    RTC_HCTOSYS_DEVICE= freeform "rct0";
     RTC_I2C_AND_SPI = yes;
     RTC_DRV_CMOS = yes;
     DMA_VIRTUAL_CHANNELS = yes;
@@ -248,7 +248,7 @@ let
     PSTORE = yes;
     PSTORE_ZSTD_COMPRESS = yes;
     PSTORE_ZSTD_COMPRESS_DEFAULT = yes;
-    PSTORE_COMPRESS_DEFAULT="zstd";
+    PSTORE_COMPRESS_DEFAULT= freeform "zstd";
     PSTORE_RAM = yes;
     NLS_CODEPAGE_437 = yes;
     NLS_ASCII = yes;
