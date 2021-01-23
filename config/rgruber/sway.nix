@@ -68,23 +68,28 @@
           layer = "top";
           position = "bottom";
           height = 30;
-          modules-left = [ "tray" "pulseaudio" "custom/performancemode"];
-          modules-center = [ "sway/workspaces" ]; 
+          modules-left = [ "sway/workspaces" "tray" "pulseaudio" "custom/performancemode"];
+          modules-center = [ "sway/window" ]; 
           modules-right = [ "network" "cpu" "memory" "disk" "battery" "battery#bat2" "clock"];
           modules = {
             "sway/workspaces" = {
               all-outputs = false;
-              "persistent_workspaces" = {
-                "1" = [];
-                "2" = [];
-                "3" = [];
-                "4" = [];
-                "5" = [];
-                "6" = [];
-                "7" = [];
-                "8" = [];
-                "9" = [];
-              }; 
+              disable-scroll = true;
+              format = "{icon} {name}";
+              format-icons = {
+                "1:www" = "龜"; # Icon: firefox-browser
+                "2:mail" = ""; # Icon: mail
+                "3:editor" = ""; # Icon: code
+                "4:terminals" = ""; # Icon: terminal
+                "5:portal" = ""; # Icon: terminal
+                "urgent" = "";
+                "focused" = "";
+                "default" = "";
+              };
+            };
+            "sway/window" = {
+              format = "{}";
+              max-length = 120;
             };
             cpu = {
               format = " {usage}%";
@@ -112,21 +117,21 @@
               format-alt = " {time} {icon}";
             };
             "custom/performancemode" = {
-               exec = "${pkgs.custom-waybar-scripts}/bin/surface-mode.sh";
-               return-type = "json";
-               interval = 30;
-               exec-on-event = true;
-               format = "{icon}";
-               format-icons = {
-		 "1" = "";
-                 "2" = "";
-                 "3" = "";
-                 "4" = "";
-               };
-               on-click = "${pkgs.custom-waybar-scripts}/bin/surface-mode.sh increase; pkill -SIGRTMIN+8 waybar";
-               on-scroll-up = "${pkgs.custom-waybar-scripts}/bin/surface-mode.sh increase; pkill -SIGRTMIN+8 waybar";
-               on-scroll-down = "${pkgs.custom-waybar-scripts}/bin/surface-mode.sh decrease; pkill -SIGRTMIN+8 waybar";
-               signal = 8;
+              exec = "${pkgs.custom-waybar-scripts}/bin/surface-mode.sh";
+              return-type = "json";
+              interval = 30;
+              exec-on-event = true;
+              format = "{icon}";
+              format-icons = {
+                "1" = "";
+                "2" = "";
+                "3" = "";
+                "4" = "";
+              };
+              on-click = "${pkgs.custom-waybar-scripts}/bin/surface-mode.sh increase; pkill -SIGRTMIN+8 waybar";
+              on-scroll-up = "${pkgs.custom-waybar-scripts}/bin/surface-mode.sh increase; pkill -SIGRTMIN+8 waybar";
+              on-scroll-down = "${pkgs.custom-waybar-scripts}/bin/surface-mode.sh decrease; pkill -SIGRTMIN+8 waybar";
+              signal = 8;
             };
             tray = {
               spacing = 5;
@@ -175,7 +180,126 @@
         }
       ];
       style = ''
-        
+        @keyframes blink-warning {
+          70% {
+            color: #FBFFFE;
+          }
+
+          to {
+            color: #FBFFFE;
+            background-color: #E6AF2E;
+          }
+        }
+
+        @keyframes blink-critical {
+          70% {
+            color: #FBFFFE;
+          }
+
+          to {
+            color: #FBFFFE;
+            background-color: #A3320B;
+          }
+        }
+
+        * {
+          border: none;
+          border-radius: 0;
+          min-height: 0;
+          margin: 0;
+          padding: 0;
+        }
+
+        #waybar {
+          background: #001514;
+          font-family: sans-serif;
+          font-size: 13px;
+        }
+
+        #battery,
+        #clock,
+        #cpu,
+        #custom-keyboard-layout,
+        #memory,
+        #mode,
+        #network,
+        #pulseaudio,
+        #temperature,
+        #tray {
+          padding-left: 10px;
+          padding-right: 10px;
+        }
+
+        #battery {
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+          animation-direction: alternate;
+        }
+
+        #battery.warning {
+          color: #E6AF2E;
+        }
+
+        #battery.critical {
+          color: #A3320B;
+        }
+
+        #clock {
+          font-weight: bold;
+        }
+
+        #cpu {
+          /* No styles */
+        }
+
+        #cpu.warning {
+          color: #E6AF2E;
+        }
+
+        #cpu.critical {
+          color: #A3320B;
+        }
+
+        #memory {
+          animation-timing-function: linear;
+          animation-iteration-count: infinite;
+          animation-direction: alternate;
+        }
+
+        #memory.warning {
+          color: #E6AF2E;
+        }
+
+        #memory.critical {
+          color: #A3320B;
+          animation-name: blink-critical;
+          animation-duration: 2s;
+        }
+
+        #network.disconnected {
+          color: #E6AF2E;
+        }
+
+        #workspaces button {
+          border-top: 2px solid transparent;
+          /* To compensate for the top border and still have vertical centering */
+          padding-bottom: 2px;
+          padding-left: 10px;
+          padding-right: 10px;
+          color: #888888;
+        }
+
+        #workspaces button.focused {
+          border-color: #4c7899;
+          color: white;
+          background-color: #285577;
+        }
+
+        #workspaces button.urgent {
+          border-color: #c9545d;
+          color: #c9545d;
+        }
+
       '';
     };
     home.packages = with pkgs; [
