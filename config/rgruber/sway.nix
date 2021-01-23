@@ -68,9 +68,9 @@
           layer = "top";
           position = "bottom";
           height = 30;
-          modules-left = [ "clock" "pulseaudio" "tray" ];
+          modules-left = [ "tray" "pulseaudio" "custom/performancemode"];
           modules-center = [ "sway/workspaces" ]; 
-          modules-right = [ "network" "cpu" "memory" "disk" "battery" ];
+          modules-right = [ "network" "cpu" "memory" "disk" "battery" "battery#bat2" "clock"];
           modules = {
             "sway/workspaces" = {
               all-outputs = false;
@@ -92,11 +92,41 @@
               tooltip = false;
             };
             battery = {
-              interval = 60;
+              bat = "BAT1";
+              interval = 30;
               states = {
                 warning = 30;
                 critical = 15;
               };
+              format = " {capacity}% {icon}";
+              format-charging = " {capacity}% ";
+              format-plugged = " {capacity}% ";
+              format-alt = " {time} {icon}";
+              #format-icons = ["" "" "" "" ""];
+            };
+            "battery#bat2" = {
+              bat = "BAT2";
+              format = " {capacity}% {icon}";
+              format-charging = " {capacity}% ";
+              format-plugged = " {capacity}% ";
+              format-alt = " {time} {icon}";
+            };
+            "custom/performancemode" = {
+               exec = "${pkgs.custom-waybar-scripts}/bin/surface-mode.sh";
+               return-type = "json";
+               interval = 30;
+               exec-on-event = true;
+               format = "{icon}";
+               format-icons = {
+		 "1" = "";
+                 "2" = "";
+                 "3" = "";
+                 "4" = "";
+               };
+               on-click = "${pkgs.custom-waybar-scripts}/bin/surface-mode.sh increase; pkill -SIGRTMIN+8 waybar";
+               on-scroll-up = "${pkgs.custom-waybar-scripts}/bin/surface-mode.sh increase; pkill -SIGRTMIN+8 waybar";
+               on-scroll-down = "${pkgs.custom-waybar-scripts}/bin/surface-mode.sh decrease; pkill -SIGRTMIN+8 waybar";
+               signal = 8;
             };
             tray = {
               spacing = 5;
@@ -144,6 +174,9 @@
           };
         }
       ];
+      style = ''
+        
+      '';
     };
     home.packages = with pkgs; [
       swaylock

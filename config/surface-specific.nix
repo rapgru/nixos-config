@@ -26,5 +26,13 @@
     opengl.driSupport32Bit = true;
   };
 
-  environment.systemPackages = [ pkgs.acpilight ];
+  environment.systemPackages = [ pkgs.acpilight pkgs.surface-control ];
+
+  security.sudo.extraRules = [
+    { groups = ["surfaceuser"]; commands = [{command="${pkgs.surface-control}/bin/surface"; options = [ "SETENV" "NOPASSWD"];}];  }
+  ];
+
+  users.groups = {
+    surfaceuser = {};
+  };
 }

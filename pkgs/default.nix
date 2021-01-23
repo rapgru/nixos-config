@@ -5,4 +5,5 @@ self: super: {
   iptsd = super.callPackage ./iptsd {};
   inih = super.callPackage ./inih {};
   surface-control = super.callPackage ./surface-control {};
+  custom-waybar-scripts = super.callPackage ./custom-waybar-scripts {};
 }
