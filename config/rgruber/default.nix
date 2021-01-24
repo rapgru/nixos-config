@@ -14,9 +14,13 @@
       thunderbird
       kdeApplications.dolphin
       custom-waybar-scripts
+      signal-desktop
     ];
     programs.alacritty = {
       enable = true;
+      settings = {
+        shell = { program = "${pkgs.fish}/bin/fish"; };
+      };
     };
     programs.vscode = {
       enable = true;

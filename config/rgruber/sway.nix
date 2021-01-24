@@ -35,24 +35,52 @@
           };
         };
         keybindings = let
+          modifier-win = "Mod4";
+          modifier-alt = "Mod1";
         in
           lib.mkOptionDefault {
             "XF86AudioRaiseVolume" = "exec pulsemixer --change-volume +5";
             "XF86AudioLowerVolume" = "exec pulsemixer --change-volume -5";
             "XF86MonBrightnessUp" = "exec brillo -A 5";
             "XF86MonBrightnessDown" = "exec brillo -U 5";
-            "Mod4+shift+g" = ''exec grim -g "$(slurp)" - | wl-copy -t image'';
+            "${modifier-win}+shift+g" = ''exec grim -g "$(slurp)" - | wl-copy --type image/png'';
+            "${modifier-alt}+tab" = "workspace back_and_forth";
           };
         modifier = "Mod4";
+        assigns = {
+          "1:www" = [{ class = "^Vivaldi-stable$"; } { app_id = "firefox"; }];
+          "8:mail" = [{ app_id = "thunderbird"; }];
+          "9:comm" = [{ class = "discord"; } { class = "Microsoft Teams - Preview";}];
+        };
         terminal = "${pkgs.alacritty}/bin/alacritty";
         menu = "${pkgs.wofi}/bin/wofi --show drun";
         gaps.inner = 5;
         gaps.smartGaps = true;
         startup = [
-          #{
-          #  command = "systemctl --user restart swaybar";
-          #  always = true;
-          #}
+          { command = "systemctl --user import-environment"; }
+          { command = "systemctl --user start graphical-session.target"; }
+          {
+            command = "firefox";
+          }
+          {
+            command = "thunderbird";
+          }
+          {
+            command = ''"sleep 5; Discord"'';
+          }
+          {
+            command = "teams";
+          }
+          { 
+            command = ''
+              swayidle -w \
+    timeout 300  'swaylock --screenshots --effect-blur 5x7 --effect-vignette 0.5:0.5 --ring-color 6B0504 --key-hl-color A3320B --fade-in 0.2 --line-color 00000000 --inside-color 00000088 --separator-color 00000000 --clock --indicator' \
+    timeout 600  'swaymsg "output * dpms off"' \
+    resume       'swaymsg "output * dpms on"' \
+    before-sleep 'swaylock --screenshots --effect-blur 5x7 --effect-vignette 0.5:0.5 --ring-color 6B0504 --key-hl-color A3320B --fade-in 0.2 --line-color 00000000 --inside-color 00000088 --separator-color 00000000 --clock --indicator' \
+    lock         'swaylock --screenshots --effect-blur 5x7 --effect-vignette 0.5:0.5 --ring-color 6B0504 --key-hl-color A3320B --fade-in 0.2 --line-color 00000000 --inside-color 00000088 --separator-color 00000000 --clock --indicator'
+            '';
+          }
         ];
         bars = [
           {
@@ -60,6 +88,16 @@
           }
         ];
       };
+      extraConfig = ''
+        workspace "1:www" output DP-1
+        workspace 2 output DP-1
+        workspace 3 output DP-1
+        workspace 4 output DP-1
+        workspace "8:mail" output eDP-1
+        workspace "9:comm" output eDP-1
+        for_window [app_id="thunderbird"] floating enable
+        for_window [class="discord"] layout stacking
+      '';
     }; 
     programs.waybar = {
       enable = true;
@@ -68,29 +106,27 @@
           layer = "top";
           position = "bottom";
           height = 30;
-          modules-left = [ "sway/workspaces" "tray" "pulseaudio" "custom/performancemode"];
-          modules-center = [ "sway/window" ]; 
-          modules-right = [ "network" "cpu" "memory" "disk" "battery" "battery#bat2" "clock"];
+          modules-left = [ "sway/workspaces" "tray" "custom/performancemode"];
+          modules-center = [ ]; 
+          modules-right = [ "network" "cpu" "memory" "disk" "battery" "battery#bat2" "pulseaudio" "clock"];
           modules = {
             "sway/workspaces" = {
               all-outputs = false;
               disable-scroll = true;
               format = "{icon} {name}";
               format-icons = {
-                "1:www" = "龜"; # Icon: firefox-browser
-                "2:mail" = ""; # Icon: mail
-                "3:editor" = ""; # Icon: code
-                "4:terminals" = ""; # Icon: terminal
-                "5:portal" = ""; # Icon: terminal
+                "1:www" = ""; # Icon: firefox-browser
+                "8:mail" = ""; # Icon: mail
+                "9:comm" = ""; # Icon: code
                 "urgent" = "";
                 "focused" = "";
                 "default" = "";
               };
             };
-            "sway/window" = {
-              format = "{}";
-              max-length = 120;
-            };
+            #"sway/window" = {
+            #  format = "{}";
+            #  max-length = 120;
+            #};
             cpu = {
               format = " {usage}%";
               interval = 1;
@@ -103,18 +139,25 @@
                 warning = 30;
                 critical = 15;
               };
-              format = " {capacity}% {icon}";
+              format = " {capacity}%";
               format-charging = " {capacity}% ";
               format-plugged = " {capacity}% ";
-              format-alt = " {time} {icon}";
+              #format-alt = " {time} {icon}";
               #format-icons = ["" "" "" "" ""];
+              tooltip = true;
             };
             "battery#bat2" = {
               bat = "BAT2";
-              format = " {capacity}% {icon}";
+              interval = 30;
+              states = {
+                warning = 30;
+                critical = 15;
+              };
+              format = " {capacity}%";
               format-charging = " {capacity}% ";
               format-plugged = " {capacity}% ";
-              format-alt = " {time} {icon}";
+              #format-alt = " {time} {icon}";
+              tooltip = true;
             };
             "custom/performancemode" = {
               exec = "${pkgs.custom-waybar-scripts}/bin/surface-mode.sh";
@@ -214,6 +257,7 @@
           background: #001514;
           font-family: sans-serif;
           font-size: 13px;
+          color: #FBFFFE;
         }
 
         #battery,
@@ -225,23 +269,35 @@
         #network,
         #pulseaudio,
         #temperature,
+        #disk,
+        #custom-performancemode,
         #tray {
           padding-left: 10px;
           padding-right: 10px;
         }
 
-        #battery {
+        #battery, battery.bat2 {
           animation-timing-function: linear;
           animation-iteration-count: infinite;
           animation-direction: alternate;
         }
 
-        #battery.warning {
+        #battery.warning, battery.bat2.warning {
           color: #E6AF2E;
         }
 
-        #battery.critical {
+        #battery.critical, battery.bat2.critical {
           color: #A3320B;
+        }
+
+        #battery.warning.discharging, battery.bat2.warning.discharging {
+          animation-name: blink-warning;
+          animation-duration: 3s;
+        }
+
+        #battery.critical.discharging, battery.bat2.critical.discharging {
+          animation-name: blink-critical;
+          animation-duration: 2s;
         }
 
         #clock {
@@ -291,7 +347,7 @@
 
         #workspaces button.focused {
           border-color: #4c7899;
-          color: white;
+          color: #FBFFFE;
           background-color: #285577;
         }
 
@@ -303,7 +359,7 @@
       '';
     };
     home.packages = with pkgs; [
-      swaylock
+      swaylock-effects
       swayidle
       wl-clipboard
       mako

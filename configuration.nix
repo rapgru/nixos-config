@@ -92,6 +92,25 @@
   };
   sound.enable = true;
 
+  #services.pipewire.enable = true;
+  #xdg.portal.enable = true;
+  #xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-wlr ];
+  #xdg.portal.gtkUsePortal = true;
+ 
+  security.pam.services.swaylock = {
+    text = ''
+      auth include login
+    '';
+  };
+  
+  services.logind = {
+    lidSwitch = "lock";
+    lidSwitchDocked = "lock";
+    extraConfig = ''
+      HandlePowerKey = "lock";
+    '';
+  };
+
   # The global useDHCP flag is deprecated, therefore explicitly set to false here.
   # Per-interface useDHCP will be mandatory in the future, so this generated config
   # replicates the default behaviour.

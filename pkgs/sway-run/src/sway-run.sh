@@ -14,4 +14,4 @@ export _JAVA_AWT_WM_NONREPARENTING=1
 export NO_AT_BRIDGE=1
 
 #systemd-cat --identifier=sway sway $@
-sway
+exec dbus-run-session sway
