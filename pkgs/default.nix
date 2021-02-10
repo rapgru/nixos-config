@@ -6,4 +6,5 @@ self: super: {
   inih = super.callPackage ./inih {};
   surface-control = super.callPackage ./surface-control {};
   custom-waybar-scripts = super.callPackage ./custom-waybar-scripts {};
+  schildi-chat = super.callPackage ./schildi-chat {};
 }

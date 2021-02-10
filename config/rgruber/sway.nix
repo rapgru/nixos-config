@@ -12,13 +12,18 @@
           eDP-1 = {
             resolution = "3000x2000"; 
             scale = "2";
-            position = "0,1080";
+            position = "0,0";
           };
           # Samsung Full HD Monitor
           DP-1 = {
             resolution = "1920x1080";
             scale = "1";
-            position = "0,0";
+            position = "0,-1080";
+          };
+          # Dell
+          DP-3 = {
+            resolution = "2560x1440";
+            position = "-530,-1440";
           };
         };
         input = { 
@@ -33,6 +38,12 @@
             xkb_layout = "us";
             xkb_variant = "intl";
           };
+          "1118:33:IPTS_Touch" = {
+            map_to_output = "eDP-1";
+          };
+          "1118:33:IPTS_Stylus" = {
+            map_to_output = "eDP-1";
+          };
         };
         keybindings = let
           modifier-win = "Mod4";
@@ -45,12 +56,13 @@
             "XF86MonBrightnessDown" = "exec brillo -U 5";
             "${modifier-win}+shift+g" = ''exec grim -g "$(slurp)" - | wl-copy --type image/png'';
             "${modifier-alt}+tab" = "workspace back_and_forth";
+            "${modifier-win}+l" = "exec swaylock --screenshots --effect-blur 5x7 --effect-vignette 0.5:0.5 --ring-color 6B0504 --key-hl-color A3320B --fade-in 0.2 --line-color 00000000 --inside-color 00000088 --separator-color 00000000 --clock --indicator";
           };
         modifier = "Mod4";
         assigns = {
           "1:www" = [{ class = "^Vivaldi-stable$"; } { app_id = "firefox"; }];
           "8:mail" = [{ app_id = "thunderbird"; }];
-          "9:comm" = [{ class = "discord"; } { class = "Microsoft Teams - Preview";}];
+          "9:comm" = [{ class = "discord"; } { class = "Element"; } { class = "Microsoft Teams - Preview";}];
         };
         terminal = "${pkgs.alacritty}/bin/alacritty";
         menu = "${pkgs.wofi}/bin/wofi --show drun";
@@ -71,6 +83,7 @@
           {
             command = "teams";
           }
+          { command = "element-desktop"; }
           { 
             command = ''
               swayidle -w \
@@ -89,10 +102,10 @@
         ];
       };
       extraConfig = ''
-        workspace "1:www" output DP-1
-        workspace 2 output DP-1
-        workspace 3 output DP-1
-        workspace 4 output DP-1
+        workspace "1:www" output DP-3 DP-1
+        workspace 2 output DP-3 DP-1
+        workspace 3 output DP-3 DP-1
+        workspace 4 output DP-3 DP-1
         workspace "8:mail" output eDP-1
         workspace "9:comm" output eDP-1
         for_window [app_id="thunderbird"] floating enable
@@ -133,7 +146,7 @@
               tooltip = false;
             };
             battery = {
-              bat = "BAT1";
+              bat = "BAT2";
               interval = 30;
               states = {
                 warning = 30;
@@ -147,7 +160,7 @@
               tooltip = true;
             };
             "battery#bat2" = {
-              bat = "BAT2";
+              bat = "BAT1";
               interval = 30;
               states = {
                 warning = 30;
@@ -361,6 +374,7 @@
     home.packages = with pkgs; [
       swaylock-effects
       swayidle
+      swaybg
       wl-clipboard
       mako
       wofi 

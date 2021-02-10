@@ -46,6 +46,10 @@
       fira
       libre-baskerville
       font-awesome
+      ubuntu_font_family
+      noto-fonts-emoji
+      noto-fonts-cjk
+      noto-fonts
     ];
     fontconfig = {
       defaultFonts = {
@@ -89,13 +93,18 @@
     enable = true;
     support32Bit = true;
     package = pkgs.pulseaudioFull;
+    daemon.config = {
+      default-sample-rate = 48000;
+      default-fragments = 8;
+      default-fragment-size-msec = 10;
+    };
   };
   sound.enable = true;
 
-  #services.pipewire.enable = true;
-  #xdg.portal.enable = true;
-  #xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-wlr ];
-  #xdg.portal.gtkUsePortal = true;
+  services.pipewire.enable = true;
+  xdg.portal.enable = true;
+  xdg.portal.extraPortals = [ pkgs.xdg-desktop-portal-gtk pkgs.xdg-desktop-portal-wlr ];
+  xdg.portal.gtkUsePortal = true;
  
   security.pam.services.swaylock = {
     text = ''
@@ -104,10 +113,10 @@
   };
   
   services.logind = {
-    lidSwitch = "lock";
-    lidSwitchDocked = "lock";
+    lidSwitch = "hybrid-sleep";
+    lidSwitchDocked = "hybrid-sleep";
     extraConfig = ''
-      HandlePowerKey = "lock";
+      HandlePowerKey = "hybrid-sleep";
     '';
   };
 

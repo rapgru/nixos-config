@@ -1,6 +1,11 @@
 { config, pkgs, lib, ... }:
 
 {
+  
+  #imports = [ 
+  #  "${builtins.fetchGit { url = "https://github.com/NixOS/nixos-hardware.git"; rev = "a0d8383c422f85f37fccee5af74b1cb4b52287d9"; }}/microsoft/surface"
+  #];
+ 
   hardware = {
     acpilight.enable = true;
     # surface wifi doesn't work alongside bluetooth
