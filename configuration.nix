@@ -112,8 +112,20 @@
     '';
   };
   
+  services.udisks2.enable = true;
+
+  services.printing = {
+    enable = true;
+    drivers = with pkgs; [ samsungUnifiedLinuxDriver hplip gutenprint canon-cups-ufr2 ];
+  };
+
+  services.avahi = {
+    enable = true;
+    nssmdns = true;
+  };
+  
   services.logind = {
-    lidSwitch = "hybrid-sleep";
+    lidSwitch = "suspend";
     lidSwitchDocked = "hybrid-sleep";
     extraConfig = ''
       HandlePowerKey = "hybrid-sleep";

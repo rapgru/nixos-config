@@ -22,8 +22,14 @@
       element-desktop
       spotify
       evince
-      schildi-chat
+      write_stylus
+      texlive.combined.scheme-full
+      udiskie-wayland
+      any-nix-shell
+      ranger
+      chromium
     ];
+    services.nextcloud-client.enable = true;
     programs.alacritty = {
       enable = true;
       settings = {
@@ -140,6 +146,9 @@
     };
     programs.fish = {
       enable = true; 
+      promptInit = ''
+        any-nix-shell fish --info-right | source
+      '';
     };
     xdg = {
       enable = true;

@@ -1,6 +1,13 @@
 { lib, pkgs, ... }:
 
 {
+
+    home.file = {
+      "wall.jpg" = {
+        source = ./wall.jpg;
+      };
+    };
+
     wayland.windowManager.sway = {
       enable = true;
       #package = null;
@@ -9,21 +16,22 @@
       systemdIntegration = false;
       config = {
         output = {
+          # Surface Monitor
           eDP-1 = {
             resolution = "3000x2000"; 
             scale = "2";
-            position = "0,0";
+            position = "530,1440";
           };
           # Samsung Full HD Monitor
           DP-1 = {
             resolution = "1920x1080";
             scale = "1";
-            position = "0,-1080";
+            position = "530,360";
           };
           # Dell
           DP-3 = {
             resolution = "2560x1440";
-            position = "-530,-1440";
+            position = "0,0";
           };
         };
         input = { 
@@ -71,6 +79,7 @@
         startup = [
           { command = "systemctl --user import-environment"; }
           { command = "systemctl --user start graphical-session.target"; }
+          { command = "swaybg -i /home/rgruber/wall.jpg -m fill"; }
           {
             command = "firefox";
           }
