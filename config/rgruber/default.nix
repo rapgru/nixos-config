@@ -22,12 +22,14 @@
       element-desktop
       spotify
       evince
-      write_stylus
       texlive.combined.scheme-full
       udiskie-wayland
       any-nix-shell
       ranger
       chromium
+      breeze-icons
+      xdg_utils
+      gimp
     ];
     services.nextcloud-client.enable = true;
     programs.alacritty = {
@@ -154,6 +156,8 @@
       enable = true;
       userDirs = {
         enable = true;
+        documents = "\$HOME/Nextcloud/Dokumente";
+        pictures = "\$HOME/Nextcloud/Bilder";
       };
     };
 }

@@ -8,4 +8,5 @@ self: super: {
   custom-waybar-scripts = super.callPackage ./custom-waybar-scripts {};
   schildi-chat = super.callPackage ./schildi-chat {};
   udiskie-wayland = super.callPackage ./udiskie-wayland {};
+  gtkgreet = super.callPackage ./gtkgreet {};
 }

@@ -5,12 +5,17 @@ let
 
   configText = ''
   [terminal]
-  vt = 2
+  vt = 1
   
   [default_session]
   ${optionalString gcfg.tuigreet.enable
     ''
       command="${pkgs.tuigreet}/bin/tuigreet --cmd ${gcfg.tuigreet.cmd} ${optionalString gcfg.tuigreet.showTime "-t"} ${optionalString gcfg.tuigreet.showIssue "-i"} ${optionalString (gcfg.tuigreet.customGreeting != "") ''-g \"${gcfg.tuigreet.customGreeting}\"''} ${optionalString gcfg.tuigreet.showAsterisks "--asterisks"}"
+    ''}
+
+  ${optionalString gcfg.gtkgreet.enable
+    ''
+      command="${pkgs.sway}/bin/sway --config /etc/greetd/sway-config"
     ''}
   user = "greeter"
   '';
@@ -56,6 +61,18 @@ in
           description = "Custom greeting string";
         };
       };
+      gtkgreet = {
+        enable = mkOption {
+          type = types.bool;
+          default = false;
+          description = "Wether to use gtkgreet as greetd greeter";
+        };
+      };
+      environments = mkOption {
+        type = types.listOf types.str;
+        default = [];
+        description = "List of commands that can be started from the greeter";
+      };
     };
   };
 
@@ -72,6 +89,30 @@ in
     etc."greetd/config.toml".text = configText;
     etc."greetd/config.toml".user = "greeter";
     etc."greetd/config.toml".group = "greeter";
+
+    etc."greetd/sway-config" = mkIf gcfg.gtkgreet.enable {
+      text = ''
+        # `-l` activates layer-shell mode. Notice that `swaymsg exit` will run after gtkgreet.
+        exec "${pkgs.gtkgreet}/bin/gtkgreet -l; swaymsg exit"
+
+        bindsym Mod4+shift+e exec swaynag \
+          -t warning \
+          -m 'What do you want to do?' \
+          -b 'Poweroff' 'systemctl poweroff' \
+          -b 'Reboot' 'systemctl reboot'
+      '';
+      user = "greeter";
+      group = "greeter";
+    };
+  
+    etc."greetd/environments" = mkIf gcfg.enable {
+      user = "greeter";
+      group = "greeter";
+      
+      text = ''
+        ${lib.concatStringsSep "\n" gcfg.environments}
+      ''; 
+    };
   }; 
 
   # unit display-manager is started during graphical.target
@@ -83,7 +124,7 @@ in
       Greeter daemon
     '';
     # after = [ "systemd-user-sessions.service" "plymouth-quit-wait.service" "getty@tty1.service" "user.slice" ];
-    after = [ "rc-local.service" "networking.service" "systemd-machined.service" "systemd-user-sessions.service" "getty@tty2.service" "systemd-logind.service" "acpid.service" ];
+    after = [ "rc-local.service" "networking.service" "systemd-machined.service" "systemd-user-sessions.service" "getty@tty1.service" "systemd-logind.service" "acpid.service" ];
     conflicts = [ "getty@tty1.service" ];
     restartIfChanged = false;
     serviceConfig = {

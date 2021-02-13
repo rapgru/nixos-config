@@ -80,6 +80,7 @@
           { command = "systemctl --user import-environment"; }
           { command = "systemctl --user start graphical-session.target"; }
           { command = "swaybg -i /home/rgruber/wall.jpg -m fill"; }
+          { command = "udiskie --tray -f dolphin --appindicator"; }
           {
             command = "firefox";
           }
