@@ -8,7 +8,7 @@
   imports =
     [
       # home manager
-      <home-manager/nixos>
+  #    <home-manager/nixos>
 
       # general modules
       ./modules/services/greetd.nix
@@ -60,16 +60,16 @@
     };
   };
 
-  home-manager.users.rgruber = { pkgs, ... }: {
-    imports = [
-      ./config/rgruber/sway.nix
-      ./config/rgruber/default.nix
-    ];
-  };
+  #home-manager.users.rgruber = { pkgs, ... }: {
+  #  imports = [
+  #    ./config/rgruber/sway.nix
+  #    ./config/rgruber/default.nix
+  #  ];
+  #};
   
   # use /etc/profiles
-  home-manager.useUserPackages = true;
-  home-manager.useGlobalPkgs = true;
+  #home-manager.useUserPackages = true;
+  #home-manager.useGlobalPkgs = true;
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;

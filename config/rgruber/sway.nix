@@ -1,5 +1,7 @@
 { lib, pkgs, ... }:
 
+let colors = (import ./colors.nix);
+in
 {
 
     home.file = {
@@ -110,6 +112,36 @@
             command = "${pkgs.waybar}/bin/waybar"; 
           }
         ];
+        colors = {
+          focused = {
+            background = colors.nord0;
+            border = colors.nord1;
+            childBorder = colors.nord13;
+            indicator = colors.nord8;
+            text = colors.nord6;
+          };
+          unfocused = {
+            background = colors.nord0;
+            border = colors.nord1;
+            childBorder = colors.nord1;
+            indicator = colors.nord3;
+            text = colors.nord6;
+          };
+          focusedInactive = {
+            background = colors.nord0;
+            border = colors.nord1;
+            childBorder = colors.nord1;
+            indicator = colors.nord3;
+            text = colors.nord6;
+          };
+          urgent = {
+            background = colors.nord12;
+            border = colors.nord12;
+            childBorder = colors.nord12;
+            indicator = colors.nord3;
+            text = colors.nord6;
+          };
+        };
       };
       extraConfig = ''
         workspace "1:www" output DP-3 DP-1
@@ -120,8 +152,75 @@
         workspace "9:comm" output eDP-1
         for_window [app_id="thunderbird"] floating enable
         for_window [class="discord"] layout stacking
+        default_border none
       '';
     }; 
+    programs.mako = {
+      enable = true;
+      backgroundColor = colors.nord8;
+      borderSize = 0;
+      textColor = colors.nord6;
+    };
+    home.file.".config/wofi/style.css".text = ''
+      
+      window {
+      margin: 0px;
+      /* border: 1px solid #bd93f9; */
+      background-color: ${colors.nord0};
+      }
+      
+      #input {
+      margin: 5px;
+      border: none;
+      color: ${colors.nord5};
+      background-color: ${colors.nord1};
+      }
+      
+      #inner-box {
+      margin: 5px;
+      border: none;
+      background-color: ${colors.nord0};
+      }
+      
+      #outer-box {
+      margin: 5px;
+      border: none;
+      background-color: ${colors.nord0};
+      }
+      
+      #scroll {
+      margin: 0px;
+      border: none;
+      }
+      
+      #text {
+      margin: 5px;
+      border: none;
+      color: ${colors.nord6};
+      } 
+      
+      #entry:selected {
+      background-color: ${colors.nord2};
+      }        
+    '';
+    gtk = {
+      enable = true;
+      font = { 
+        name = "Fira Sans 10";
+      }; 
+      iconTheme = {
+        package = pkgs.gnome3.adwaita-icon-theme;
+        name = "Adwaita";
+      };
+      theme = {
+        package = pkgs.nordic;
+        name = "Nordic";
+      };
+    };
+    qt = {
+      enable = true;
+      platformTheme = "gtk";
+    };
     programs.waybar = {
       enable = true;
       settings = [
@@ -152,6 +251,10 @@
             #};
             cpu = {
               format = " {usage}%";
+              states = {
+                warning = 85;
+                critical = 95;
+              };
               interval = 1;
               tooltip = false;
             };
@@ -248,23 +351,19 @@
       style = ''
         @keyframes blink-warning {
           70% {
-            color: #FBFFFE;
           }
 
           to {
-            color: #FBFFFE;
-            background-color: #E6AF2E;
+            background-color: ${colors.nord13};
           }
         }
 
         @keyframes blink-critical {
           70% {
-            color: #FBFFFE;
           }
 
           to {
-            color: #FBFFFE;
-            background-color: #A3320B;
+            background-color: ${colors.nord11};
           }
         }
 
@@ -277,10 +376,10 @@
         }
 
         #waybar {
-          background: #001514;
+          background: ${colors.nord0};
           font-family: sans-serif;
           font-size: 13px;
-          color: #FBFFFE;
+          color: ${colors.nord6};
         }
 
         #battery,
@@ -306,11 +405,11 @@
         }
 
         #battery.warning, battery.bat2.warning {
-          color: #E6AF2E;
+          color: ${colors.nord13};
         }
 
         #battery.critical, battery.bat2.critical {
-          color: #A3320B;
+          color: ${colors.nord11};
         }
 
         #battery.warning.discharging, battery.bat2.warning.discharging {
@@ -332,11 +431,11 @@
         }
 
         #cpu.warning {
-          color: #E6AF2E;
+          color: ${colors.nord13};
         }
 
         #cpu.critical {
-          color: #A3320B;
+          color: ${colors.nord11};
         }
 
         #memory {
@@ -346,37 +445,39 @@
         }
 
         #memory.warning {
-          color: #E6AF2E;
+          color: ${colors.nord13};
         }
 
         #memory.critical {
-          color: #A3320B;
+          color: ${colors.nord11};
           animation-name: blink-critical;
           animation-duration: 2s;
         }
 
         #network.disconnected {
-          color: #E6AF2E;
+          color: ${colors.nord13};
         }
 
         #workspaces button {
-          border-top: 2px solid transparent;
+          /* border-top: 2px solid transparent; */
           /* To compensate for the top border and still have vertical centering */
-          padding-bottom: 2px;
+          /* padding-bottom: 2px; */
           padding-left: 10px;
           padding-right: 10px;
-          color: #888888;
+          color: ${colors.nord4};
+          background-color: ${colors.nord2};
         }
 
         #workspaces button.focused {
-          border-color: #4c7899;
-          color: #FBFFFE;
-          background-color: #285577;
+          /* border-color: #4c7899; */
+          color: ${colors.nord6};
+          background-color: ${colors.nord9};
         }
 
         #workspaces button.urgent {
-          border-color: #c9545d;
-          color: #c9545d;
+          /* border-color: #c9545d; */
+          /* color: #c9545d; */
+          background-color: ${colors.nord12};
         }
 
       '';
@@ -386,10 +487,10 @@
       swayidle
       swaybg
       wl-clipboard
-      mako
       wofi 
       sway-run
       grim # screenshots
       slurp # select region 
+      libsecret # for nextcloud client
     ];
 }
