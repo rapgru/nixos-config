@@ -28,12 +28,15 @@ in
       any-nix-shell
       ranger
       chromium
-      #breeze-icons
+      breeze-icons
       adwaita-qt
       xdg_utils
       gimp
     ];
     home.file.".mozilla/firefox/default/search.json.mozlz4".source = ./search.json.mozlz4;
+    home.sessionVariables = {
+      QT_STYLE_OVERRIDE = "Nordic";
+    };
     programs.firefox = {
       enable = true;
       package = unstable.firefox-wayland;

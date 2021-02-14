@@ -83,18 +83,10 @@ in
           { command = "systemctl --user start graphical-session.target"; }
           { command = "swaybg -i /home/rgruber/wall.jpg -m fill"; }
           { command = "udiskie --tray -f dolphin --appindicator"; }
-          {
-            command = "firefox";
-          }
-          {
-            command = "thunderbird";
-          }
-          {
-            command = ''"sleep 5; Discord"'';
-          }
-          {
-            command = "teams";
-          }
+          { command = "firefox"; }
+          { command = "thunderbird"; }
+          { command = ''"sleep 5; Discord"''; }
+          { command = "teams"; }
           { command = "element-desktop"; }
           { 
             command = ''
@@ -108,9 +100,7 @@ in
           }
         ];
         bars = [
-          {
-            command = "${pkgs.waybar}/bin/waybar"; 
-          }
+          { command = "${pkgs.waybar}/bin/waybar"; }
         ];
         colors = {
           focused = {
