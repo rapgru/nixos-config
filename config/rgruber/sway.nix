@@ -156,26 +156,21 @@ in
       window {
       margin: 0px;
       /* border: 1px solid #bd93f9; */
-      background-color: ${colors.nord0};
       }
       
       #input {
       margin: 5px;
       border: none;
-      color: ${colors.nord5};
-      background-color: ${colors.nord1};
       }
       
       #inner-box {
       margin: 5px;
       border: none;
-      background-color: ${colors.nord0};
       }
       
       #outer-box {
       margin: 5px;
       border: none;
-      background-color: ${colors.nord0};
       }
       
       #scroll {
@@ -186,11 +181,9 @@ in
       #text {
       margin: 5px;
       border: none;
-      color: ${colors.nord6};
       } 
       
       #entry:selected {
-      background-color: ${colors.nord2};
       }        
     '';
     gtk = {
