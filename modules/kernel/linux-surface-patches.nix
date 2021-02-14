@@ -4,13 +4,13 @@ let
 
   # linux-surface github repo
   linuxSurface = pkgs.fetchFromGitHub {
-    inherit (lib.importJSON ./linux-surface.json)
-      owner repo rev sha256;
+    #inherit (lib.importJSON ./linux-surface.json)
+    #  owner repo rev sha256;
 
-    # owner = "linux-surface";
-    # repo = "linux-surface";
-    # rev = "debian-5.10.2-1";
-    # sha256 = "03f2jjcmwmhnxjsnf931j98pr6i9rdh2hvf530lb3cvr3hhj89li";
+    owner = "linux-surface";
+    repo = "linux-surface";
+    rev = "22d1215a54f93483a912edfb8674f9d71bb32c85";
+    sha256 = "0lrvb53kzxqc4rhhmd6zghz76l38i5rd49fwbjrm6jika4hiijb5";
   };
   
   # currently selected kernel version => for folder selection in linux-surface repo
@@ -171,7 +171,7 @@ in
     nixpkgs = {
       overlays = [
         (self: super: {
-          linux_surface_5_9 = pkgs.linuxPackagesFor (pkgs.linux_5_9.override {
+          linux_surface_5_10 = pkgs.linuxPackagesFor (pkgs.linux_5_10.override {
             structuredExtraConfig = (additionalSurfaceConfig // additionalSurfaceConfig);
             # ignoreConfigErrors = true;
             kernelPatches = linuxSurfacePatches;

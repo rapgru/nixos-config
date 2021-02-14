@@ -2,15 +2,15 @@
 
 {
   services.greetd = {
-    enable = true;
+    #enable = true;
     tuigreet = {
-#      enable = true;
+      enable = true;
       cmd = "sway-run";
       showTime = true;
       showAsterisks = true;
       customGreeting = "Hello sir! Please log in:";
     }; 
-    gtkgreet.enable = true;
+    #gtkgreet.enable = true;
     environments = [
       "sway-run"
     ];

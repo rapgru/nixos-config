@@ -1,16 +1,17 @@
 { pkgs, lib, ... } :
 
-let colors = (import ./colors.nix);
+let
+  colors = (import ./colors.nix);
+  fromNixpkgsCommit = commit: fetchTarball ("https://github.com/NixOS/nixpkgs/archive/" + commit + ".tar.gz");
+  unstable = import (fromNixpkgsCommit "891f607d5301d6730cb1f9dcf3618bcb1ab7f10e") {};
 in
 {
-
-    home.packages = let fromNixpkgsCommit = commit: fetchTarball ("https://github.com/NixOS/nixpkgs/archive/" + commit + ".tar.gz"); unstable = import (fromNixpkgsCommit "891f607d5301d6730cb1f9dcf3618bcb1ab7f10e") {}; in with pkgs; [
+    home.packages = let  in with pkgs; [
       vivaldi
       gotop
       discord
       pulsemixer
       #firefox-wayland
-      unstable.firefox-wayland
       teams
       jetbrains.idea-ultimate
       jetbrains.phpstorm
@@ -32,6 +33,133 @@ in
       xdg_utils
       gimp
     ];
+    home.file.".mozilla/firefox/default/search.json.mozlz4".source = ./search.json.mozlz4;
+    programs.firefox = {
+      enable = true;
+      package = unstable.firefox-wayland;
+      extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+        ublock-origin
+        lastpass-password-manager
+      ];
+      profiles.default = {
+        id = 0;
+        isDefault = true;
+        name = "default";
+        settings = {
+          "browser.urlbar.placeholderName" = "DuckDuckGo";
+          "browser.newtabpage.pinned" = "[{\"url\":\"https://google.com\",\"label\":\"@google\",\"searchTopSite\":true}]";
+          "browser.newtabpage.activity-stream.improvesearch.topSiteSearchShortcuts.havePinned" = "google";
+          "browser.search.region" = "AT";
+          "browser.startup.page" = 3;
+          "devtools.theme" = "dark";
+          "widget.content.gtk-theme-override" = "Nordic";
+          "signon.rememberSignons" = false;
+          "widget.content.allow-gtk-dark-theme" = true;
+          "toolkit.telemetry.enabled" = false;
+          "browser.newtabpage.activity-stream.enabled" = false;
+          "extensions.pocket.enabled" = false;
+          "app.normandy.enabled" = false;
+          "app.normandy.api_url" = "";
+          "app.shield.optoutstudies.enabled" = false;
+          "browser.sessionstore.max_tabs_undo" = 25;
+          "browser.sessionstore.max_windows_undo" = 3;
+          "browser.search.firstRunSkipsHomepage" = true;
+          "datareporting.healthreport.uploadEnabled" = false;
+          "datareporting.healthreport.service.enabled" = false;
+          "datareporting.policy.dataSubmissionEnabled" = false;
+          "browser.shell.checkDefaultBrowser" = false;
+        };
+        userChrome = ''
+          @-moz-document url(chrome://browser/content/browser.xul),
+               url(chrome://browser/content/browser.xhtml)
+          {
+            /*** TAB BAR ***/
+            /* Ensure tab doesn't show through auto-completion popup */
+            .tabbrowser-tab { z-index: 0 !important; }
+            /* Ensure tab "spacers" don't show through the completion window */
+            #tabbrowser-arrowscrollbox > spacer { z-index: -1 !important; }
+            #mainPopupSet { z-index: 9999 !important; }
+          
+            /* Hide tabbar if only one tab */
+            @import url(./css/tabs-hide-if-only-one.css);
+          
+            /* Remove the colored overline on the focused tab */
+            .tabbrowser-tab .tab-line { background: none !important; }
+          
+            /* Replace favicon on tabs with close button on mouse hover */
+            .tabbrowser-tab:not(:hover) .tab-close-button,
+            .tabbrowser-tab:not([pinned]):hover .tab-icon-image { display: none !important; }
+            .tabbrowser-tab:not([pinned]):hover .tab-close-button { display:block !important; }
+          
+            .tabbrowser-tab:hover .tab-throbber,
+            .tabbrowser-tab:hover .tab-icon-image,
+            .tabbrowser-tab:hover .tab-sharing-icon-overlay,
+            .tabbrowser-tab:hover .tab-icon-overlay,
+            .tabbrowser-tab:hover .tab-label-container,
+            .tabbrowser-tab:hover .tab-icon-sound {
+              -moz-box-ordinal-group: 2 !important;
+            }
+          
+            .tabbrowser-tab .tab-close-button {
+              margin-left: -2px !important;
+              margin-right: 4px !important;
+            }
+          
+            .tab-close-button:hover {
+              fill-opacity: 0 !important;
+            }
+          
+            .tabbrowser-tab::after,
+            .tabbrowser-tab::before {
+              border-left: none !important;
+              border-right: none !important;
+            }
+          
+            .scrollbutton-up[orient="horizontal"]~spacer { border-width: 0px; opacity: 0 }
+          
+            scrollbar {
+              -moz-appearance: none !important;
+              display: none !important;
+            }
+          
+            /*** NAV BAR ***/
+            /* Hide urlbar */
+            #nav-bar {
+              position: relative !important;
+              z-index: 2 !important;
+              height: 2px !important;
+              min-height: 2px !important;
+              margin-bottom: -2px !important;
+              opacity: 0 !important;
+              border: none !important;
+            }
+          
+            /* But unfocus it when we invoke it with ctrl+L */
+            #nav-bar:focus-within {
+              height: auto !important;
+              margin-bottom: 0px !important;
+              opacity: 1 !important;
+              overflow: show !important;
+            }
+          
+            #urlbar-container {
+              min-height: 0 !important;
+            }
+          
+            #urlbar {
+              top: 0 !important;
+            }
+          
+            #urlbar-input-container {
+              height: 28px !important;
+            }
+          
+            /*** Load local overrides ***/
+            @import url(./userChrome.local.css);
+          }
+        '';
+      };
+    };
     services.nextcloud-client.enable = true;
     programs.alacritty = {
       enable = true;

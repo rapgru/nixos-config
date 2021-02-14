@@ -13,7 +13,7 @@
     bluetooth.enable = true;
   };
 
-  boot.kernelPackages = pkgs.linux_surface_5_9;
+  boot.kernelPackages = pkgs.linux_surface_5_10;
 
   networking = {
     networkmanager.enable = true;
