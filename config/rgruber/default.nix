@@ -17,7 +17,6 @@ in
       jetbrains.phpstorm
       jetbrains.webstorm
       thunderbird
-      kdeApplications.dolphin
       custom-waybar-scripts
       signal-desktop
       element-desktop
@@ -50,8 +49,6 @@ in
         name = "default";
         settings = {
           "browser.urlbar.placeholderName" = "DuckDuckGo";
-          "browser.newtabpage.pinned" = "[{\"url\":\"https://google.com\",\"label\":\"@google\",\"searchTopSite\":true}]";
-          "browser.newtabpage.activity-stream.improvesearch.topSiteSearchShortcuts.havePinned" = "google";
           "browser.search.region" = "AT";
           "browser.startup.page" = 3;
           "devtools.theme" = "dark";
