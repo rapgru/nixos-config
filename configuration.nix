@@ -43,6 +43,11 @@
     brillo
     surface-control
   ];
+
+  networking.nat.enable = true;
+  networking.nat.internalInterfaces = ["ve-+"];
+  networking.nat.externalInterface = "wlp1s0";
+  networking.networkmanager.unmanaged = [ "interface-name:ve-*" ];
   
   fonts = {
     fonts = with pkgs; [
@@ -134,7 +139,7 @@
   
   services.logind = {
     lidSwitch = "suspend";
-    lidSwitchDocked = "hybrid-sleep";
+    lidSwitchDocked = "suspend";
     extraConfig = ''
       HandlePowerKey = "hybrid-sleep";
     '';

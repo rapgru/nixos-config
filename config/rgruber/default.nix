@@ -31,11 +31,45 @@ in
       adwaita-qt
       xdg_utils
       gimp
+      libreoffice
+      bc
+      virtmanager
+      aerc
+      khard
+      # for nextcloud client
+      libgnome-keyring
+      libsecret
+      # for ranger
+      viu
+      pistol
+      # for ms teams
+      chromium
+      cherrytree
+      gnome3.nautilus
     ];
-    home.file.".mozilla/firefox/default/search.json.mozlz4".source = ./search.json.mozlz4;
     home.sessionVariables = {
       QT_STYLE_OVERRIDE = "Nordic";
+      EDITOR = "vim";
     };
+    xdg.dataFile."applications/ranger.desktop".text = ''
+      [Desktop Entry]
+      Type=Application
+      Name=ranger
+      Comment=Launches the ranger file manager
+      Icon=utilities-terminal
+      Exec=${pkgs.alacritty}/bin/alacritty -e ranger
+      Categories=ConsoleOnly;System;FileTools;FileManager
+      MimeType=inode/directory;
+    '';
+    xdg.configFile."ranger/rc.conf".text = ''
+      set preview_script ${pkgs.pistol}/bin/pistol
+      set show_hidden true
+      set preview_files true
+      set use_preview_script true
+    '';
+    xdg.configFile."pistol/pistol.conf".text = ''
+      image/* viu --height 20 %pistol-filename%
+    '';
     programs.firefox = {
       enable = true;
       package = unstable.firefox-wayland;
@@ -236,6 +270,7 @@ in
         #vscode-extensions.marcostazi.vs-code-vagrantfile
         #vscode-extensions.shyykoserhiy.vscode-spotify
         vscode-extensions.james-yu.latex-workshop
+        vscode-extensions.ms-vscode-remote.remote-ssh
         #vscode-extensions.geoffkaile.latex-count
       ] ++ vscode-utils.extensionsFromVscodeMarketplace [
         { name = "better-comments"; publisher = "aaron-bond"; version = "2.1.0";
@@ -258,6 +293,8 @@ in
           sha256 = "0b5crc3l17dj6n9dn1gxwh9g0hq9zs9h1w8lsnrssmm1m59vn414"; }
         { name = "vetur"; publisher = "octref"; version = "0.32.0";
           sha256 = "0wk6y6r529jwbk6bq25zd1bdapw55f6x3mk3vpm084d02p2cs2gl"; }
+        { name = "nord-visual-studio-code"; publisher = "arcticicestudio"; version = "0.15.1";
+          sha256 = "0lc50jkwxq3vffpwlkqdnkq77c7gbpfn1lk9l0n9qxsyfyhb68qj"; }
       ];
       haskell = let
         all-hies = import (fetchTarball "https://github.com/infinisil/all-hies/tarball/4b6aab017cdf96a90641dc287437685675d598da") {};
@@ -273,7 +310,7 @@ in
         "languageServerHaskell.useCustomHieWrapper" = true;
        	"workbench.settings.useSplitJSON" = true;
        	"workbench.settings.openDefaultKeybindings" = true;
-       	"workbench.colorTheme" = "Min Light";
+       	"workbench.colorTheme" = "Nord";
        	"workbench.startupEditor" = "newUntitledFile";
         "workbench.editor.limit.enabled" = false;
         "workbench.editor.limit.perEditorGroup" = true;
@@ -318,16 +355,16 @@ in
          "vsintellicode.modify.editor.suggestSelection" = "automaticallyOverrodeDefaultValue";
          
          # -- ThemeSwitch -- #
-         "themeswitch.directives" = [
-     	   {
-             "time" = "20:00";
-             "theme" = "Min Dark";
-           }
-           {
-             "time" = "07:00";
-             "theme" = "Min Light";
-           }
-         ];
+         #"themeswitch.directives" = [
+     	 #  {
+         #    "time" = "20:00";
+         #    "theme" = "Min Dark";
+         #  }
+         #  {
+         #    "time" = "07:00";
+         #    "theme" = "Min Light";
+         #  }
+         #];
       
          # -- Latex -- #
          "latex-workshop.view.pdf.viewer" = "tab";
@@ -348,6 +385,19 @@ in
         enable = true;
         documents = "\$HOME/Nextcloud/Dokumente";
         pictures = "\$HOME/Nextcloud/Bilder";
+      };
+      mimeApps = {
+        enable = true;
+        defaultApplications = {
+          "x-scheme-handler/msteams" = [ "teams.desktop" ];
+          "text/http" = [ "firefox.desktop" ];
+          "x-scheme-handler/http" = [ "firefox.desktop" ];
+          "x-scheme-handler/https" = [ "firefox.desktop" ];
+          "x-scheme-handler/about" = [ "firefox.desktop" ];
+          "x-scheme-handler/unkown" = [ "firefox.desktop" ];
+          "inode/directory" = [ "ranger.desktop" ];
+          "inode/mount-point" = [ "ranger.desktop" ];
+        };
       };
     };
 }
