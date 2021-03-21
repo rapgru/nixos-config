@@ -60,12 +60,12 @@ in
           modifier-alt = "Mod1";
         in
           lib.mkOptionDefault {
-            "XF86AudioRaiseVolume" = "exec pulsemixer --change-volume +5";
-            "XF86AudioLowerVolume" = "exec pulsemixer --change-volume -5";
+            "XF86AudioRaiseVolume" = "exec pulsemixer --change-volume +5 && bash ${pkgs.mywob}/bin/mywob $(echo \"($(pulsemixer --get-volume | awk '{print $1}')/150.0)*100\" | bc -l | sed 's/\\.[0-9]*//g')";
+            "XF86AudioLowerVolume" = "exec pulsemixer --change-volume -5 && bash ${pkgs.mywob}/bin/mywob $(echo \"($(pulsemixer --get-volume | awk '{print $1}')/150.0)*100\" | bc -l | sed 's/\\.[0-9]*//g')";
             "XF86AudioMute" = "exec pulsemixer --toggle-mute";
             "XF86AudioPlay" = "exec playerctl play-pause";
-            "XF86MonBrightnessUp" = "exec brillo -A 5";
-            "XF86MonBrightnessDown" = "exec brillo -U 5";
+            "XF86MonBrightnessUp" = "exec brillo -A 5 && bash ${pkgs.mywob}/bin/mywob $(brillo | sed 's/\\.[0-9]*//g')";
+            "XF86MonBrightnessDown" = "exec brillo -U 5 && bash ${pkgs.mywob}/bin/mywob $(brillo | sed 's/\\.[0-9]*//g')";
             "${modifier-win}+shift+g" = ''exec grim -g "$(slurp)" - | wl-copy --type image/png'';
             "${modifier-alt}+tab" = "workspace back_and_forth";
             "${modifier-win}+o" = "exec swaylock --screenshots --effect-blur 5x7 --effect-vignette 0.5:0.5 --fade-in 0.2 --clock --indicator";
@@ -642,5 +642,7 @@ in
       slurp # select region 
       libsecret # for nextcloud client
       playerctl
+      mywob
+      wob
     ];
 }

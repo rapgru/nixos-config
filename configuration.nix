@@ -32,6 +32,8 @@
   nixpkgs.config.allowUnfree = true;
   nixpkgs.config.pulseaudio = true;
 
+  #services.xserver.enable = true;
+
   environment.systemPackages = with pkgs; [
     neofetch
     wayland-utils
@@ -48,6 +50,11 @@
   networking.nat.internalInterfaces = ["ve-+"];
   networking.nat.externalInterface = "wlp1s0";
   networking.networkmanager.unmanaged = [ "interface-name:ve-*" ];
+
+  boot.kernel.sysctl = {
+    "fs.inotify.max_user_instances" = 10000;
+    "fs.inotify.max_user_watches" = 640000;
+  };
   
   fonts = {
     fonts = with pkgs; [

@@ -9,4 +9,5 @@ self: super: {
   schildi-chat = super.callPackage ./schildi-chat {};
   udiskie-wayland = super.callPackage ./udiskie-wayland {};
   gtkgreet = super.callPackage ./gtkgreet {};
+  mywob = super.callPackage ./mywob {};
 }

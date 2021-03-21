@@ -22,6 +22,21 @@
       scanRandMacAddress = false;
     };
   };
+
+  
+  # create systemd service for setting screen light
+  systemd.services.startup-backlight = {
+    description = ''
+      Set backlight on boot
+    '';
+    restartIfChanged = false;
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.brillo}/bin/brillo -S 80";
+    }; 
+    wantedBy = [ "multi-user.target" ];
+    enable = true;
+  };
   
   hardware = {
     opengl = {

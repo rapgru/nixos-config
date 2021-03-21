@@ -16,6 +16,7 @@ in
       jetbrains.idea-ultimate
       jetbrains.phpstorm
       jetbrains.webstorm
+      unstable.jetbrains.clion
       thunderbird
       custom-waybar-scripts
       signal-desktop
@@ -46,6 +47,7 @@ in
       chromium
       cherrytree
       gnome3.nautilus
+      unstable.p3x-onenote
     ];
     home.sessionVariables = {
       QT_STYLE_OVERRIDE = "Nordic";
@@ -272,6 +274,7 @@ in
         vscode-extensions.james-yu.latex-workshop
         vscode-extensions.ms-vscode-remote.remote-ssh
         #vscode-extensions.geoffkaile.latex-count
+        vscode-extensions.ms-vscode.cpptools
       ] ++ vscode-utils.extensionsFromVscodeMarketplace [
         { name = "better-comments"; publisher = "aaron-bond"; version = "2.1.0";
           sha256 = "0kmmk6bpsdrvbb7dqf0d3annpg41n9g6ljzc1dh0akjzpbchdcwp"; }
